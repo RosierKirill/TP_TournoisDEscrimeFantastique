@@ -1,6 +1,6 @@
 namespace TP.TournoiEscrimeFantastique;
 
-public class ScoreCalculator
+public class ScoreCalculator : IScoreCalculator
 {
     private const int WinPoints      = 3;
     private const int DrawPoints     = 1;

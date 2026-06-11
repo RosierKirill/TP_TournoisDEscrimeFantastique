@@ -5,9 +5,9 @@ namespace TP.TournoiEscrimeFantastique;
 /// </summary>
 public class TournamentRanking
 {
-    private readonly ScoreCalculator _scoreCalculator;
+    private readonly IScoreCalculator _scoreCalculator;
 
-    public TournamentRanking(ScoreCalculator scoreCalculator)
+    public TournamentRanking(IScoreCalculator scoreCalculator)
     {
         _scoreCalculator = scoreCalculator;
     }
