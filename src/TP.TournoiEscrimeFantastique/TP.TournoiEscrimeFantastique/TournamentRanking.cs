@@ -17,7 +17,12 @@ public class TournamentRanking
     /// </summary>
     public List<Player> GetRanking(List<Player> players)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(players);
+
+        // OrderByDescending est stable : l'ordre d'entrée est conservé pour les ex æquo.
+        return players
+            .OrderByDescending(ScoreOf)
+            .ToList();
     }
 
     /// <summary>
@@ -26,6 +31,17 @@ public class TournamentRanking
     /// </summary>
     public Player? GetChampion(List<Player> players)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(players);
+
+        if (players.Count == 0)
+        {
+            return null;
+        }
+
+        var best = GetRanking(players)[0];
+        return ScoreOf(best) > 0 ? best : null;
     }
+
+    private int ScoreOf(Player player) =>
+        _scoreCalculator.CalculateScore(player.Matches, player.IsDisqualified, player.PenaltyPoints);
 }
