@@ -272,7 +272,3 @@ dotnet test TP.TournoiEscrimeFantastique.slnx \
 | [`README.md`](../README.md) | Vue d'ensemble du projet et démarrage |
 
 ---
-
-## 10. Message clé pour la soutenance CI/CD
-
-> La CI compile le projet complet (domaine + API) mais **automatise les tests sur la couche métier** : 42 tests unitaires vérifient le calcul des scores et le classement. Un **quality gate** bloque toute régression sous 95 % de couverture sur `ScoreCalculator`. L'API REST ne réimplémente pas ces règles : elle délègue à `IScoreCalculator` et `TournamentRanking` via `DomainPlayerService`. Les tests d'intégration API et web restent une piste d'amélioration pour couvrir « tous les niveaux » demandés par le sujet.
