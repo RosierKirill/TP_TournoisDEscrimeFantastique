@@ -8,7 +8,7 @@ namespace TP.TournoiEscrimeFantastique.Api.Services;
 /// <summary>
 /// Pont entre les entités persistées et le modèle domaine (Player, TournamentRanking).
 /// </summary>
-internal class DomainPlayerService(IScoreCalculator scoreCalculator, TournamentRanking tournamentRanking)
+public class DomainPlayerService(IScoreCalculator scoreCalculator, TournamentRanking tournamentRanking)
 {
     public int GetScore(PlayerEntity entity)
     {
