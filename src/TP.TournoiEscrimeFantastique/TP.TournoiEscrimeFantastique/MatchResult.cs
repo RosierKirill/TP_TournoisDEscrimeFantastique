@@ -1,6 +1,6 @@
 namespace TP.TournoiEscrimeFantastique;
 
-public enum FightResult
+public enum MatchResult
 {
     Win,
     Draw,

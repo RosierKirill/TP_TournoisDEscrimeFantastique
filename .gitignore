@@ -21,6 +21,7 @@
 *.snupkg
 **/[Pp]ackages/*
 !**/[Pp]ackages/build/
+.nuget/
 project.lock.json
 project.fragment.lock.json
 artifacts/
