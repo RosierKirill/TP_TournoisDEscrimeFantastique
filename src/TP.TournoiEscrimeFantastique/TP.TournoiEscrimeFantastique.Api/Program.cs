@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using TP.TournoiEscrimeFantastique;
 using TP.TournoiEscrimeFantastique.Api.Data;
+using TP.TournoiEscrimeFantastique.Api.Services;
 using DomainScoreCalculator = TP.TournoiEscrimeFantastique.ScoreCalculator;
 using IFightScoreCalculator = TP.TournoiEscrimeFantastique.IScoreCalculator;
 
@@ -43,6 +45,8 @@ builder.Services.AddDbContext<TournamentDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=tournament.db"));
 
 builder.Services.AddScoped<IFightScoreCalculator, DomainScoreCalculator>();
+builder.Services.AddScoped<TournamentRanking>();
+builder.Services.AddScoped<DomainPlayerService>();
 builder.Services.AddSingleton<TP.TournoiEscrimeFantastique.Api.Notifications.INotificationService,
                               TP.TournoiEscrimeFantastique.Api.Notifications.InMemoryNotificationService>();
 builder.Services.AddSingleton<TP.TournoiEscrimeFantastique.Api.Duels.IDuelOutcomeGenerator,

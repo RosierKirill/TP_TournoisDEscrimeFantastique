@@ -3,15 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using TP.TournoiEscrimeFantastique.Api.Data;
 using TP.TournoiEscrimeFantastique.Api.Data.Entities;
 using TP.TournoiEscrimeFantastique.Api.DTOs;
-using DomainMatchResult = TP.TournoiEscrimeFantastique.MatchResult;
-using IFightScoreCalculator = TP.TournoiEscrimeFantastique.IScoreCalculator;
+using TP.TournoiEscrimeFantastique.Api.Services;
 
 namespace TP.TournoiEscrimeFantastique.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
-public class PlayersController(TournamentDbContext db, IFightScoreCalculator scoreCalculator) : ControllerBase
+public class PlayersController(TournamentDbContext db, DomainPlayerService domainPlayers) : ControllerBase
 {
     /// <summary>Récupère tous les joueurs avec leur score calculé.</summary>
     [HttpGet]
@@ -23,7 +22,7 @@ public class PlayersController(TournamentDbContext db, IFightScoreCalculator sco
             .AsNoTracking()
             .ToListAsync();
 
-        return Ok(players.Select(ToDto));
+        return Ok(players.Select(domainPlayers.ToDto));
     }
 
     /// <summary>Récupère un joueur par son identifiant.</summary>
@@ -33,7 +32,7 @@ public class PlayersController(TournamentDbContext db, IFightScoreCalculator sco
     public async Task<IActionResult> GetById(int id)
     {
         var player = await FindPlayerAsync(id);
-        return player is null ? NotFound() : Ok(ToDto(player));
+        return player is null ? NotFound() : Ok(domainPlayers.ToDto(player));
     }
 
     /// <summary>Crée un nouveau joueur.</summary>
@@ -55,7 +54,7 @@ public class PlayersController(TournamentDbContext db, IFightScoreCalculator sco
         db.Players.Add(entity);
         await db.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetById), new { id = entity.Id }, ToDto(entity));
+        return CreatedAtAction(nameof(GetById), new { id = entity.Id }, domainPlayers.ToDto(entity));
     }
 
     /// <summary>Met à jour les informations d'un joueur (nom, disqualification, pénalités).</summary>
@@ -76,7 +75,7 @@ public class PlayersController(TournamentDbContext db, IFightScoreCalculator sco
         player.PenaltyPoints = dto.PenaltyPoints;
 
         await db.SaveChangesAsync();
-        return Ok(ToDto(player));
+        return Ok(domainPlayers.ToDto(player));
     }
 
     /// <summary>Supprime un joueur et tous ses combats.</summary>
@@ -118,7 +117,7 @@ public class PlayersController(TournamentDbContext db, IFightScoreCalculator sco
         });
 
         await db.SaveChangesAsync();
-        return Ok(ToDto(player));
+        return Ok(domainPlayers.ToDto(player));
     }
 
     /// <summary>Supprime un combat d'un joueur.</summary>
@@ -139,32 +138,11 @@ public class PlayersController(TournamentDbContext db, IFightScoreCalculator sco
             ordered[i].MatchOrder = i + 1;
 
         await db.SaveChangesAsync();
-        return Ok(ToDto(player));
+        return Ok(domainPlayers.ToDto(player));
     }
 
     private async Task<PlayerEntity?> FindPlayerAsync(int id) =>
         await db.Players
             .Include(p => p.Matches.OrderBy(m => m.MatchOrder))
             .FirstOrDefaultAsync(p => p.Id == id);
-
-    private PlayerDto ToDto(PlayerEntity p)
-    {
-        var domainMatches = p.Matches
-            .OrderBy(m => m.MatchOrder)
-            .Select(m => OutcomeMapper.ToMatchResult(m.Outcome))
-            .ToList<DomainMatchResult>();
-
-        var score = scoreCalculator.CalculateScore(domainMatches, p.IsDisqualified, p.PenaltyPoints);
-
-        return new PlayerDto(
-            p.Id,
-            p.Name,
-            p.IsDisqualified,
-            p.PenaltyPoints,
-            p.Matches.OrderBy(m => m.MatchOrder)
-                     .Select(m => new MatchDto(m.Id, m.Outcome, m.MatchOrder))
-                     .ToList(),
-            score
-        );
-    }
 }

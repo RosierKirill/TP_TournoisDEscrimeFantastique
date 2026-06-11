@@ -3,8 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TP.TournoiEscrimeFantastique.Api.Data;
 using TP.TournoiEscrimeFantastique.Api.DTOs;
 using TP.TournoiEscrimeFantastique.Api.Notifications;
-using DomainMatchResult = TP.TournoiEscrimeFantastique.MatchResult;
-using IFightScoreCalculator = TP.TournoiEscrimeFantastique.IScoreCalculator;
+using TP.TournoiEscrimeFantastique.Api.Services;
 
 namespace TP.TournoiEscrimeFantastique.Api.Controllers;
 
@@ -13,7 +12,7 @@ namespace TP.TournoiEscrimeFantastique.Api.Controllers;
 [Produces("application/json")]
 public class NotificationsController(
     TournamentDbContext db,
-    IFightScoreCalculator scoreCalculator,
+    DomainPlayerService domainPlayers,
     INotificationService notifications) : ControllerBase
 {
     /// <summary>Retourne l'historique des notifications envoyées (les plus récentes d'abord).</summary>
@@ -47,33 +46,19 @@ public class NotificationsController(
             .AsNoTracking()
             .ToListAsync();
 
-        var ranked = players
-            .Select(p => new
+        var ranking = domainPlayers.GetRankingDtos(players);
+        var sent = ranking
+            .Select(entry =>
             {
-                Player = p,
-                Score = scoreCalculator.CalculateScore(
-                    p.Matches.OrderBy(m => m.MatchOrder)
-                             .Select(m => OutcomeMapper.ToMatchResult(m.Outcome))
-                             .ToList<DomainMatchResult>(),
-                    p.IsDisqualified,
-                    p.PenaltyPoints)
+                var message = entry.IsDisqualified
+                    ? "Vous avez été disqualifié du tournoi. Score final : 0."
+                    : entry.Rank == 1 && entry.Score > 0
+                        ? $"Félicitations ! Vous êtes le champion du tournoi avec {entry.Score} points 🏆"
+                        : $"Tournoi terminé : vous terminez {entry.Rank}ᵉ avec {entry.Score} points.";
+
+                return NotificationDto.From(notifications.Notify(entry.Name, message));
             })
-            .OrderByDescending(x => x.Score)
             .ToList();
-
-        var sent = new List<NotificationDto>();
-        for (var i = 0; i < ranked.Count; i++)
-        {
-            var entry = ranked[i];
-            var rank = i + 1;
-            var message = entry.Player.IsDisqualified
-                ? "Vous avez été disqualifié du tournoi. Score final : 0."
-                : rank == 1 && entry.Score > 0
-                    ? $"Félicitations ! Vous êtes le champion du tournoi avec {entry.Score} points 🏆"
-                    : $"Tournoi terminé : vous terminez {rank}ᵉ avec {entry.Score} points.";
-
-            sent.Add(NotificationDto.From(notifications.Notify(entry.Player.Name, message)));
-        }
 
         return Ok(sent);
     }
