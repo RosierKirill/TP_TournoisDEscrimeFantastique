@@ -6,18 +6,22 @@ règles précises, puis établit le classement du tournoi.
 
 [![Tests & Coverage](https://github.com/RosierKirill/TP_TournoisDEscrimeFantastique/actions/workflows/tests.yml/badge.svg)](https://github.com/RosierKirill/TP_TournoisDEscrimeFantastique/actions/workflows/tests.yml)
 
+[![codecov](https://codecov.io/gh/RosierKirill/TP_TournoisDEscrimeFantastique/graph/
+badge.svg)](https://codecov.io/gh/RosierKirill/TP_TournoisDEscrimeFantastique)
+
 ## Règles de notation
 
-| Règle | Effet |
-|-------|-------|
-| Victoire | +3 points |
-| Match nul | +1 point |
-| Défaite | 0 point |
-| Bonus de série | +5 points par série d'au moins 3 victoires consécutives (une fois par série) |
-| Disqualification | score total = 0, quelles que soient les performances |
-| Pénalités | soustraites du score, sans jamais descendre sous 0 (`Max(0, score - pénalités)`) |
+| Règle            | Effet                                                                            |
+| ---------------- | -------------------------------------------------------------------------------- |
+| Victoire         | +3 points                                                                        |
+| Match nul        | +1 point                                                                         |
+| Défaite          | 0 point                                                                          |
+| Bonus de série   | +5 points par série d'au moins 3 victoires consécutives (une fois par série)     |
+| Disqualification | score total = 0, quelles que soient les performances                             |
+| Pénalités        | soustraites du score, sans jamais descendre sous 0 (`Max(0, score - pénalités)`) |
 
 **Exemples :**
+
 - `Win, Draw, Loss, Win` → 3+1+0+3 = **7**
 - `Win, Win, Win, Draw` → 9+1 +5 bonus = **15**
 - `Win×3, Loss, Win×4` → 21 +5 +5 = **31** (deux séries)
@@ -83,3 +87,4 @@ Voir [docs/RAPPORT_DE_TESTS.md](docs/RAPPORT_DE_TESTS.md) pour le détail.
 Le workflow [`.github/workflows/tests.yml`](.github/workflows/tests.yml) s'exécute à
 chaque `push` et `pull_request` : restauration → build Release → tests avec couverture
 → contrôle du seuil ≥ 95 % → publication du rapport en artefact.
+
