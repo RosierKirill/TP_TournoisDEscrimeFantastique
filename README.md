@@ -28,7 +28,8 @@ règles précises, puis établit le classement du tournoi.
 
 ## Pile technique
 
-- **.NET 9** (C#, nullable activé)
+- **.NET 9/10** (C#, nullable activé) — domaine + API ASP.NET Core
+- **Next.js 14** (TypeScript, Tailwind CSS) — front web (dossier `web/`)
 - **xUnit** 2.9 — framework de tests
 - **FluentAssertions** 8.2 — assertions lisibles
 - **Moq** 4.20 — isolation des dépendances
@@ -57,12 +58,59 @@ docs/
 
 ## Démarrage
 
-Prérequis : [SDK .NET 9](https://dotnet.microsoft.com/download) (ou supérieur).
+Le projet se compose de **deux applications** à lancer dans **deux terminaux** :
+
+- l'**API REST** (.NET) sur `http://localhost:5211` ;
+- le **front web** (Next.js) sur `http://localhost:3000`.
+
+### Prérequis
+
+- [SDK .NET 9/10](https://dotnet.microsoft.com/download) (ou supérieur) — pour l'API et les tests.
+- [Node.js 18+](https://nodejs.org) (testé sur Node 20) — pour le front.
+
+### 1. Lancer l'API (.NET)
+
+Depuis la **racine du dépôt** :
 
 ```bash
-# Restaurer et compiler
+# Restaurer les dépendances et compiler
 dotnet build TP.TournoiEscrimeFantastique.slnx
 
+# Démarrer l'API (applique les migrations SQLite au démarrage)
+dotnet run --project src/TP.TournoiEscrimeFantastique/TP.TournoiEscrimeFantastique.Api
+```
+
+- API : <http://localhost:5211>
+- Documentation interactive (Scalar) : <http://localhost:5211/scalar/v1>
+
+### 2. Lancer le front (Next.js)
+
+Dans un **second terminal** :
+
+```bash
+cd web
+
+# Installer les dépendances (à faire une seule fois, ou après modif du package.json)
+npm install
+
+# Démarrer le serveur de développement
+npm run dev
+```
+
+Le front est accessible sur <http://localhost:3000>.
+
+> Par défaut le front appelle l'API sur `http://localhost:5211`. Pour surcharger,
+> créer un fichier `web/.env.local` :
+>
+> ```env
+> NEXT_PUBLIC_API_URL=http://localhost:5211
+> ```
+
+Voir [web/README.md](web/README.md) pour le détail du front (scripts, fonctionnalités).
+
+### Tests & couverture (.NET)
+
+```bash
 # Lancer les tests
 dotnet test TP.TournoiEscrimeFantastique.slnx
 
