@@ -6,8 +6,7 @@ règles précises, puis établit le classement du tournoi.
 
 [![Tests & Coverage](https://github.com/RosierKirill/TP_TournoisDEscrimeFantastique/actions/workflows/tests.yml/badge.svg)](https://github.com/RosierKirill/TP_TournoisDEscrimeFantastique/actions/workflows/tests.yml)
 
-[![codecov](https://codecov.io/gh/RosierKirill/TP_TournoisDEscrimeFantastique/graph/
-badge.svg)](https://codecov.io/gh/RosierKirill/TP_TournoisDEscrimeFantastique)
+[![codecov](https://codecov.io/gh/RosierKirill/TP_TournoisDEscrimeFantastique/graph/badge.svg)](https://codecov.io/gh/RosierKirill/TP_TournoisDEscrimeFantastique)
 
 ## Règles de notation
 
