@@ -2,9 +2,14 @@ namespace TP.TournoiEscrimeFantastique;
 
 public class ScoreCalculator
 {
+    private const int WinPoints      = 3;
+    private const int DrawPoints     = 1;
+    private const int SeriesBonus    = 5;
+    private const int SeriesThreshold = 3;
+
     public int CalculateScore(IList<MatchResult> matches, bool isDisqualified = false, int penaltyPoints = 0)
     {
-        if (matches == null) throw new ArgumentNullException(nameof(matches));
+        if (matches == null)    throw new ArgumentNullException(nameof(matches));
         if (penaltyPoints < 0) throw new ArgumentException("Les pénalités ne peuvent pas être négatives.", nameof(penaltyPoints));
 
         if (isDisqualified) return 0;
@@ -17,12 +22,12 @@ public class ScoreCalculator
             switch (match)
             {
                 case MatchResult.Win:
-                    score += 3;
+                    score += WinPoints;
                     consecutiveWins++;
-                    if (consecutiveWins == 3) score += 5;
+                    if (consecutiveWins == SeriesThreshold) score += SeriesBonus;
                     break;
                 case MatchResult.Draw:
-                    score += 1;
+                    score += DrawPoints;
                     consecutiveWins = 0;
                     break;
                 case MatchResult.Loss:
