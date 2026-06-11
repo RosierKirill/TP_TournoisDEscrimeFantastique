@@ -96,4 +96,30 @@ public class TournamentRankingTests
         act.Should().Throw<ArgumentNullException>()
             .WithParameterName("players");
     }
+
+    [Fact]
+    public void GetRanking_WithEmptyList_ReturnsEmpty()
+    {
+        // Arrange
+        var players = new List<Player>();
+
+        // Act
+        var ranking = _ranking.GetRanking(players);
+
+        // Assert
+        ranking.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void GetChampion_WithEmptyList_ReturnsNull()
+    {
+        // Arrange
+        var players = new List<Player>();
+
+        // Act
+        var champion = _ranking.GetChampion(players);
+
+        // Assert
+        champion.Should().BeNull();
+    }
 }
