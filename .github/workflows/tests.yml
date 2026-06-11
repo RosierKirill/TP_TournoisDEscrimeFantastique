@@ -1,0 +1,58 @@
+name: Tests & Coverage
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            9.0.x
+            10.0.x
+
+      - name: Restore
+        run: dotnet restore TP.TournoiEscrimeFantastique.slnx
+
+      - name: Build
+        run: dotnet build TP.TournoiEscrimeFantastique.slnx --configuration Release --no-restore
+
+      - name: Test with coverage
+        run: >
+          dotnet test TP.TournoiEscrimeFantastique.slnx
+          --configuration Release
+          --no-build
+          --collect:"XPlat Code Coverage"
+          --results-directory ./coverage
+
+      - name: Enforce ScoreCalculator coverage >= 95%
+        run: |
+          report=$(find ./coverage -name 'coverage.cobertura.xml' | head -1)
+          if [ -z "$report" ]; then
+            echo "::error::Aucun rapport de couverture trouvé."
+            exit 1
+          fi
+          rate=$(grep -o 'class name="TP.TournoiEscrimeFantastique.ScoreCalculator"[^>]*' "$report" | grep -oE 'line-rate="[0-9.]+"' | head -1 | grep -oE '[0-9.]+')
+          echo "ScoreCalculator line-rate = $rate"
+          awk -v r="$rate" 'BEGIN { if (r+0 < 0.95) { print "::error::Couverture ScoreCalculator " (r*100) "% < 95%"; exit 1 } else { print "Couverture OK: " (r*100) "%" } }'
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: ./coverage/**/coverage.cobertura.xml
+
+      - name: Upload coverage to Codecov (best-effort)
+        uses: codecov/codecov-action@v4
+        with:
+          directory: ./coverage
+          fail_ci_if_error: false
