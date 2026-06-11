@@ -2,15 +2,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TP.TournoiEscrimeFantastique.Api.Data;
 using TP.TournoiEscrimeFantastique.Api.DTOs;
-using DomainMatchResult = TP.TournoiEscrimeFantastique.MatchResult;
-using IFightScoreCalculator = TP.TournoiEscrimeFantastique.IScoreCalculator;
+using TP.TournoiEscrimeFantastique.Api.Services;
 
 namespace TP.TournoiEscrimeFantastique.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
-public class RankingController(TournamentDbContext db, IFightScoreCalculator scoreCalculator) : ControllerBase
+public class RankingController(TournamentDbContext db, DomainPlayerService domainPlayers) : ControllerBase
 {
     /// <summary>Retourne le classement de tous les joueurs par score décroissant.</summary>
     [HttpGet]
@@ -22,21 +21,7 @@ public class RankingController(TournamentDbContext db, IFightScoreCalculator sco
             .AsNoTracking()
             .ToListAsync();
 
-        var ranked = players
-            .Select(p => new
-            {
-                Player = p,
-                Score = scoreCalculator.CalculateScore(
-                    p.Matches.OrderBy(m => m.MatchOrder)
-                             .Select(m => OutcomeMapper.ToMatchResult(m.Outcome))
-                             .ToList<DomainMatchResult>(),
-                    p.IsDisqualified,
-                    p.PenaltyPoints)
-            })
-            .OrderByDescending(x => x.Score)
-            .Select((x, i) => new RankingEntryDto(i + 1, x.Player.Id, x.Player.Name, x.Score, x.Player.IsDisqualified));
-
-        return Ok(ranked);
+        return Ok(domainPlayers.GetRankingDtos(players));
     }
 
     /// <summary>Retourne le champion du tournoi (joueur avec le meilleur score &gt; 0).</summary>
@@ -50,23 +35,10 @@ public class RankingController(TournamentDbContext db, IFightScoreCalculator sco
             .AsNoTracking()
             .ToListAsync();
 
-        var ranked = players
-            .Select(p => new
-            {
-                Player = p,
-                Score = scoreCalculator.CalculateScore(
-                    p.Matches.OrderBy(m => m.MatchOrder)
-                             .Select(m => OutcomeMapper.ToMatchResult(m.Outcome))
-                             .ToList<DomainMatchResult>(),
-                    p.IsDisqualified,
-                    p.PenaltyPoints)
-            })
-            .OrderByDescending(x => x.Score)
-            .FirstOrDefault();
-
-        if (ranked is null || ranked.Score == 0)
+        var champion = domainPlayers.GetChampionDto(players);
+        if (champion is null)
             return NotFound("Aucun champion : tous les joueurs ont un score nul ou la liste est vide.");
 
-        return Ok(new RankingEntryDto(1, ranked.Player.Id, ranked.Player.Name, ranked.Score, ranked.Player.IsDisqualified));
+        return Ok(champion);
     }
 }

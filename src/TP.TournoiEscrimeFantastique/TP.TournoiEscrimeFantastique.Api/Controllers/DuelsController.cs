@@ -5,8 +5,7 @@ using TP.TournoiEscrimeFantastique.Api.Data.Entities;
 using TP.TournoiEscrimeFantastique.Api.DTOs;
 using TP.TournoiEscrimeFantastique.Api.Duels;
 using TP.TournoiEscrimeFantastique.Api.Notifications;
-using DomainMatchResult = TP.TournoiEscrimeFantastique.MatchResult;
-using IFightScoreCalculator = TP.TournoiEscrimeFantastique.IScoreCalculator;
+using TP.TournoiEscrimeFantastique.Api.Services;
 
 namespace TP.TournoiEscrimeFantastique.Api.Controllers;
 
@@ -15,7 +14,7 @@ namespace TP.TournoiEscrimeFantastique.Api.Controllers;
 [Produces("application/json")]
 public class DuelsController(
     TournamentDbContext db,
-    IFightScoreCalculator scoreCalculator,
+    DomainPlayerService domainPlayers,
     IDuelOutcomeGenerator outcomeGenerator,
     INotificationService notifications) : ControllerBase
 {
@@ -53,8 +52,8 @@ public class DuelsController(
         AppendMatch(playerB, outcomeB);
         await db.SaveChangesAsync();
 
-        var scoreA = ScoreOf(playerA);
-        var scoreB = ScoreOf(playerB);
+        var scoreA = domainPlayers.GetScore(playerA);
+        var scoreB = domainPlayers.GetScore(playerB);
 
         // Notification du résultat
         notifications.Notify(playerA.Name, ResultMessage(playerA.Name, playerB.Name, outcomeA, scoreA));
@@ -84,14 +83,6 @@ public class DuelsController(
             MatchOrder = nextOrder,
         });
     }
-
-    private int ScoreOf(PlayerEntity player) =>
-        scoreCalculator.CalculateScore(
-            player.Matches.OrderBy(m => m.MatchOrder)
-                          .Select(m => OutcomeMapper.ToMatchResult(m.Outcome))
-                          .ToList<DomainMatchResult>(),
-            player.IsDisqualified,
-            player.PenaltyPoints);
 
     private async Task<PlayerEntity?> FindAsync(int id) =>
         await db.Players
