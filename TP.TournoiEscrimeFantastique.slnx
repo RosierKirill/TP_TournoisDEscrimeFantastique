@@ -1,2 +1,9 @@
 <Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/TP.TournoiEscrimeFantastique/">
+    <Project Path="src/TP.TournoiEscrimeFantastique/TP.TournoiEscrimeFantastique/TP.TournoiEscrimeFantastique.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TP.TournoiEscrimeFantastique.Tests/TP.TournoiEscrimeFantastique.Tests.csproj" />
+  </Folder>
 </Solution>

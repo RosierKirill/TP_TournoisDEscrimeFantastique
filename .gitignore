@@ -1,0 +1,51 @@
+## Build results
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+
+## Visual Studio / Rider / VS Code
+.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+## NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Test & coverage
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.trx
+*.coverage
+*.coveragexml
+coverage/
+TestResults/
+*.VisualState.xml
+
+## .NET
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
+
+## OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+## Cursor / local tooling
+.cursor/
