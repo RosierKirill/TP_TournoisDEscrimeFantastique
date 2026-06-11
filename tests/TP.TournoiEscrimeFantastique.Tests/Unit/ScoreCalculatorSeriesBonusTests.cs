@@ -1,7 +1,7 @@
 using FluentAssertions;
 using TP.TournoiEscrimeFantastique;
 using Xunit;
-using static TP.TournoiEscrimeFantastique.MatchResult;
+using static TP.TournoiEscrimeFantastique.MatchResult.Result;
 
 namespace TP.TournoiEscrimeFantastique.Tests.Unit;
 
@@ -12,7 +12,7 @@ public class ScoreCalculatorSeriesBonusTests
     [Fact]
     public void CalculateScore_WithThreeConsecutiveWins_Returns14Points()
     {
-        var results = new List<MatchResult> { Win, Win, Win };
+        var results = new List<MatchResult> { new(Win), new(Win), new(Win) };
 
         var score = _calculator.CalculateScore(results);
 
@@ -22,7 +22,7 @@ public class ScoreCalculatorSeriesBonusTests
     [Fact]
     public void CalculateScore_WithFourConsecutiveWins_Returns17Points()
     {
-        var results = new List<MatchResult> { Win, Win, Win, Win };
+        var results = new List<MatchResult> { new(Win), new(Win), new(Win), new(Win) };
 
         var score = _calculator.CalculateScore(results);
 
@@ -33,7 +33,7 @@ public class ScoreCalculatorSeriesBonusTests
     public void CalculateScore_WithWinWinLossWin_Returns9Points()
     {
         // Série de 2 victoires interrompue : jamais ≥ 3 consécutives → pas de bonus
-        var results = new List<MatchResult> { Win, Win, Loss, Win };
+        var results = new List<MatchResult> { new(Win), new(Win), new(Loss), new(Win) };
 
         var score = _calculator.CalculateScore(results);
 
@@ -44,7 +44,7 @@ public class ScoreCalculatorSeriesBonusTests
     public void CalculateScore_WithMultipleBonusSeries_Returns31Points()
     {
         // Win×3 → série 1 (+5), Loss brise, Win×4 → série 2 (+5)
-        var results = new List<MatchResult> { Win, Win, Win, Loss, Win, Win, Win, Win };
+        var results = new List<MatchResult> { new(Win), new(Win), new(Win), new(Loss), new(Win), new(Win), new(Win), new(Win) };
 
         var score = _calculator.CalculateScore(results);
 
@@ -55,7 +55,7 @@ public class ScoreCalculatorSeriesBonusTests
     public void CalculateScore_WithWinDrawWinWin_Returns10Points()
     {
         // Draw brise la série : jamais 3 victoires consécutives
-        var results = new List<MatchResult> { Win, Draw, Win, Win };
+        var results = new List<MatchResult> { new(Win), new(Draw), new(Win), new(Win) };
 
         var score = _calculator.CalculateScore(results);
 

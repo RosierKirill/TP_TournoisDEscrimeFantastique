@@ -1,7 +1,7 @@
 using FluentAssertions;
 using TP.TournoiEscrimeFantastique;
 using Xunit;
-using static TP.TournoiEscrimeFantastique.MatchResult;
+using static TP.TournoiEscrimeFantastique.MatchResult.Result;
 
 namespace TP.TournoiEscrimeFantastique.Tests.Unit;
 
@@ -27,13 +27,14 @@ public class ScoreCalculatorEdgeCaseTests
         var act = () => _calculator.CalculateScore(results);
 
         act.Should().Throw<ArgumentNullException>()
-           .WithParameterName("matches");
+           .WithParameterName("matches")
+           .WithMessage("*cannot be null*");
     }
 
     [Fact]
     public void CalculateScore_WithNegativePenalties_ThrowsArgumentException()
     {
-        var results = new List<MatchResult> { Win };
+        var results = new List<MatchResult> { new(Win) };
 
         var act = () => _calculator.CalculateScore(results, penaltyPoints: -5);
 
@@ -46,7 +47,7 @@ public class ScoreCalculatorEdgeCaseTests
     {
         // Pattern (Win×3, Loss) × 25 : 25 séries de 3 victoires consécutives
         var results = Enumerable.Repeat(
-            new[] { Win, Win, Win, Loss }, 25)
+            new[] { new MatchResult(Win), new MatchResult(Win), new MatchResult(Win), new MatchResult(Loss) }, 25)
             .SelectMany(x => x)
             .ToList();
 

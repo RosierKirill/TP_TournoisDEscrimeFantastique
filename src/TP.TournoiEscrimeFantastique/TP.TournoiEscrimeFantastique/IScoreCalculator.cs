@@ -8,5 +8,5 @@ public interface IScoreCalculator
     /// <summary>
     /// Calcule le score final d'un joueur selon les règles du tournoi.
     /// </summary>
-    int CalculateScore(IList<MatchResult> matches, bool isDisqualified = false, int penaltyPoints = 0);
+    int CalculateScore(List<MatchResult> matches, bool isDisqualified = false, int penaltyPoints = 0);
 }

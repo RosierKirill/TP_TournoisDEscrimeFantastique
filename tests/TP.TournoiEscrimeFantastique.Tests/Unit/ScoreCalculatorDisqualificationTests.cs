@@ -1,7 +1,7 @@
 using FluentAssertions;
 using TP.TournoiEscrimeFantastique;
 using Xunit;
-using static TP.TournoiEscrimeFantastique.MatchResult;
+using static TP.TournoiEscrimeFantastique.MatchResult.Result;
 
 namespace TP.TournoiEscrimeFantastique.Tests.Unit;
 
@@ -12,7 +12,7 @@ public class ScoreCalculatorDisqualificationTests
     [Fact]
     public void CalculateScore_WhenDisqualifiedWithPositiveScore_Returns0()
     {
-        var results = new List<MatchResult> { Win, Win, Win };
+        var results = new List<MatchResult> { new(Win), new(Win), new(Win) };
 
         var score = _calculator.CalculateScore(results, isDisqualified: true);
 

@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Xunit;
 using TP.TournoiEscrimeFantastique;
-using static TP.TournoiEscrimeFantastique.MatchResult;
+using static TP.TournoiEscrimeFantastique.MatchResult.Result;
 
 namespace TP.TournoiEscrimeFantastique.Tests.Unit;
 
@@ -17,9 +17,9 @@ public class TournamentRankingTests
     public void GetRanking_WithDistinctScores_OrdersPlayersByScoreDescending()
     {
         // Arrange
-        var galahad = new Player("Galahad", new List<MatchResult> { Win, Win, Win }); // 14
-        var morgane = new Player("Morgane", new List<MatchResult> { Win, Draw });      // 4
-        var noir = new Player("Chevalier Noir", new List<MatchResult> { Draw });       // 1
+        var galahad = new Player("Galahad", new List<MatchResult> { new(Win), new(Win), new(Win) }); // 14
+        var morgane = new Player("Morgane", new List<MatchResult> { new(Win), new(Draw) });      // 4
+        var noir = new Player("Chevalier Noir", new List<MatchResult> { new(Draw) });       // 1
         var players = new List<Player> { morgane, noir, galahad };
 
         // Act
@@ -33,9 +33,9 @@ public class TournamentRankingTests
     public void GetRanking_WithTiedScores_PreservesInputOrder()
     {
         // Arrange
-        var top = new Player("Top", new List<MatchResult> { Win, Win, Win }); // 14
-        var x = new Player("X", new List<MatchResult> { Win });               // 3
-        var y = new Player("Y", new List<MatchResult> { Draw, Draw, Draw });  // 3
+        var top = new Player("Top", new List<MatchResult> { new(Win), new(Win), new(Win) }); // 14
+        var x = new Player("X", new List<MatchResult> { new(Win) });               // 3
+        var y = new Player("Y", new List<MatchResult> { new(Draw), new(Draw), new(Draw) });  // 3
         var players = new List<Player> { x, top, y };
 
         // Act
@@ -60,8 +60,8 @@ public class TournamentRankingTests
     public void GetChampion_WithSeveralPlayers_ReturnsHighestScorer()
     {
         // Arrange
-        var galahad = new Player("Galahad", new List<MatchResult> { Win, Win, Win }); // 14
-        var morgane = new Player("Morgane", new List<MatchResult> { Win, Draw });      // 4
+        var galahad = new Player("Galahad", new List<MatchResult> { new(Win), new(Win), new(Win) }); // 14
+        var morgane = new Player("Morgane", new List<MatchResult> { new(Win), new(Draw) });      // 4
         var players = new List<Player> { morgane, galahad };
 
         // Act
@@ -75,8 +75,8 @@ public class TournamentRankingTests
     public void GetChampion_WhenAllPlayersDisqualified_ReturnsNull()
     {
         // Arrange
-        var p1 = new Player("P1", new List<MatchResult> { Win, Win, Win }, isDisqualified: true); // 0
-        var p2 = new Player("P2", new List<MatchResult> { Win, Draw }, isDisqualified: true);      // 0
+        var p1 = new Player("P1", new List<MatchResult> { new(Win), new(Win), new(Win) }, isDisqualified: true); // 0
+        var p2 = new Player("P2", new List<MatchResult> { new(Win), new(Draw) }, isDisqualified: true);      // 0
         var players = new List<Player> { p1, p2 };
 
         // Act

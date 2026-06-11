@@ -1,7 +1,7 @@
 using FluentAssertions;
 using TP.TournoiEscrimeFantastique;
 using Xunit;
-using static TP.TournoiEscrimeFantastique.MatchResult;
+using static TP.TournoiEscrimeFantastique.MatchResult.Result;
 
 namespace TP.TournoiEscrimeFantastique.Tests.Unit;
 
@@ -12,7 +12,7 @@ public class ScoreCalculatorBaseTests
     [Fact]
     public void CalculateScore_WithWinDrawLoss_Returns4Points()
     {
-        var results = new List<MatchResult> { Win, Draw, Loss };
+        var results = new List<MatchResult> { new(Win), new(Draw), new(Loss) };
 
         var score = _calculator.CalculateScore(results);
 
@@ -22,7 +22,7 @@ public class ScoreCalculatorBaseTests
     [Fact]
     public void CalculateScore_WithTwoWins_Returns6Points()
     {
-        var results = new List<MatchResult> { Win, Win };
+        var results = new List<MatchResult> { new(Win), new(Win) };
 
         var score = _calculator.CalculateScore(results);
 
@@ -32,7 +32,7 @@ public class ScoreCalculatorBaseTests
     [Fact]
     public void CalculateScore_WithThreeDraws_Returns3Points()
     {
-        var results = new List<MatchResult> { Draw, Draw, Draw };
+        var results = new List<MatchResult> { new(Draw), new(Draw), new(Draw) };
 
         var score = _calculator.CalculateScore(results);
 
@@ -42,7 +42,7 @@ public class ScoreCalculatorBaseTests
     [Fact]
     public void CalculateScore_WithTwoLosses_Returns0Points()
     {
-        var results = new List<MatchResult> { Loss, Loss };
+        var results = new List<MatchResult> { new(Loss), new(Loss) };
 
         var score = _calculator.CalculateScore(results);
 

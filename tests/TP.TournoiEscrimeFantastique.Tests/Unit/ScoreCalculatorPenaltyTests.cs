@@ -1,7 +1,7 @@
 using FluentAssertions;
 using TP.TournoiEscrimeFantastique;
 using Xunit;
-using static TP.TournoiEscrimeFantastique.MatchResult;
+using static TP.TournoiEscrimeFantastique.MatchResult.Result;
 
 namespace TP.TournoiEscrimeFantastique.Tests.Unit;
 
@@ -12,7 +12,7 @@ public class ScoreCalculatorPenaltyTests
     [Fact]
     public void CalculateScore_WithNormalPenalties_Returns7Points()
     {
-        var results = new List<MatchResult> { Win, Draw, Win, Win }; // 10 pts brut
+        var results = new List<MatchResult> { new(Win), new(Draw), new(Win), new(Win) }; // 10 pts brut
 
         var score = _calculator.CalculateScore(results, penaltyPoints: 3);
 
@@ -22,7 +22,7 @@ public class ScoreCalculatorPenaltyTests
     [Fact]
     public void CalculateScore_WithPenaltiesGreaterThanScore_Returns0()
     {
-        var results = new List<MatchResult> { Draw, Win, Draw }; // 5 pts brut
+        var results = new List<MatchResult> { new(Draw), new(Win), new(Draw) }; // 5 pts brut
 
         var score = _calculator.CalculateScore(results, penaltyPoints: 8);
 
@@ -32,7 +32,7 @@ public class ScoreCalculatorPenaltyTests
     [Fact]
     public void CalculateScore_WithEqualPenalties_Returns0()
     {
-        var results = new List<MatchResult> { Win, Draw, Win }; // 7 pts brut
+        var results = new List<MatchResult> { new(Win), new(Draw), new(Win) }; // 7 pts brut
 
         var score = _calculator.CalculateScore(results, penaltyPoints: 7);
 

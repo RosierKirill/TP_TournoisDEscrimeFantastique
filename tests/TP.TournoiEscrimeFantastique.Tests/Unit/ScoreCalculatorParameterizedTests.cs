@@ -11,16 +11,20 @@ public class ScoreCalculatorParameterizedTests
     private readonly ScoreCalculator _calculator = new();
 
     [Theory]
-    [InlineData(new MatchResult[] { Win },                         3)]
-    [InlineData(new MatchResult[] { Draw },                        1)]
-    [InlineData(new MatchResult[] { Loss },                        0)]
-    [InlineData(new MatchResult[] { Win, Draw },                   4)]
-    [InlineData(new MatchResult[] { Win, Draw, Loss },             4)]
-    [InlineData(new MatchResult[] { Win, Win, Win },              14)]
+    [InlineData(new[] { "Win" },                       3)]
+    [InlineData(new[] { "Draw" },                      1)]
+    [InlineData(new[] { "Loss" },                      0)]
+    [InlineData(new[] { "Win", "Draw" },               4)]
+    [InlineData(new[] { "Win", "Draw", "Loss" },       4)]
+    [InlineData(new[] { "Win", "Win", "Win" },        14)]
     public void CalculateScore_WithInlineData_ReturnsExpectedScore(
-        MatchResult[] results, int expectedScore)
+        string[] results, int expectedScore)
     {
-        var score = _calculator.CalculateScore(results.ToList());
+        var matches = results
+            .Select(r => new MatchResult(Enum.Parse<MatchResult.Result>(r)))
+            .ToList();
+
+        var score = _calculator.CalculateScore(matches);
 
         score.Should().Be(expectedScore);
     }
