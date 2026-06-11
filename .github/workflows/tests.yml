@@ -51,8 +51,9 @@ jobs:
           name: coverage
           path: ./coverage/**/coverage.cobertura.xml
 
-      - name: Upload coverage to Codecov (best-effort)
+      - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           directory: ./coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
