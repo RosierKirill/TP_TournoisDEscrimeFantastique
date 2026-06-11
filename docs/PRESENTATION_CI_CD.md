@@ -8,11 +8,11 @@ Nous développons le backend d'un jeu de rôle fantastique : des chevaliers s'af
 
 Le dépôt est organisé en **trois couches** :
 
-| Couche | Dossier | Rôle |
-|--------|---------|------|
-| **Domaine** (règles métier) | `src/.../TP.TournoiEscrimeFantastique/` | Calcul de score, classement, modèles `Player` / `MatchResult` |
-| **API REST** | `src/.../TP.TournoiEscrimeFantastique.Api/` | HTTP, persistance SQLite (EF Core), duels, notifications |
-| **Application web** | `web/` | Interface Next.js consommant l'API |
+| Couche                      | Dossier                                     | Rôle                                                          |
+| --------------------------- | ------------------------------------------- | ------------------------------------------------------------- |
+| **Domaine** (règles métier) | `src/.../TP.TournoiEscrimeFantastique/`     | Calcul de score, classement, modèles `Player` / `MatchResult` |
+| **API REST**                | `src/.../TP.TournoiEscrimeFantastique.Api/` | HTTP, persistance SQLite (EF Core), duels, notifications      |
+| **Application web**         | `web/`                                      | Interface Next.js consommant l'API                            |
 
 La **CI** (GitHub Actions) compile la solution .NET, exécute les tests unitaires et vérifie un seuil de couverture sur le cœur métier.
 
@@ -29,16 +29,16 @@ Fichier : [`.github/workflows/tests.yml`](../.github/workflows/tests.yml)
 
 ### Étapes du job `test`
 
-| Étape | Action |
-|-------|--------|
-| Checkout | Récupération du code source |
-| Setup .NET | Installation des SDK 9.0 et 10.0 |
-| Restore | `dotnet restore TP.TournoiEscrimeFantastique.slnx` |
-| Build | Compilation en configuration **Release** |
+| Étape             | Action                                                                               |
+| ----------------- | ------------------------------------------------------------------------------------ |
+| Checkout          | Récupération du code source                                                          |
+| Setup .NET        | Installation des SDK 9.0 et 10.0                                                     |
+| Restore           | `dotnet restore TP.TournoiEscrimeFantastique.slnx`                                   |
+| Build             | Compilation en configuration **Release**                                             |
 | Test + couverture | `dotnet test` avec collecteur **XPlat Code Coverage** (coverlet → rapport Cobertura) |
-| **Quality gate** | Échec de la CI si la couverture de `ScoreCalculator` passe **sous 95 %** |
-| Artefacts | Publication du rapport `coverage.cobertura.xml` |
-| Codecov | Envoi optionnel du rapport (ne bloque pas la CI en cas d'erreur) |
+| **Quality gate**  | Échec de la CI si la couverture de `ScoreCalculator` passe **sous 95 %**             |
+| Artefacts         | Publication du rapport `coverage.cobertura.xml`                                      |
+| Codecov           | Envoi optionnel du rapport (ne bloque pas la CI en cas d'erreur)                     |
 
 ### Ce que la CI garantit aujourd'hui
 
@@ -86,25 +86,25 @@ Le projet de tests référence **uniquement la bibliothèque domaine** (`TP.Tour
 Classe testée : `src/.../TP.TournoiEscrimeFantastique/ScoreCalculator.cs`  
 Interface : `IScoreCalculator.CalculateScore(matches, isDisqualified, penaltyPoints)`
 
-| Fichier de test | Scénarios couverts | Nb tests |
-|-----------------|-------------------|:--------:|
-| `ScoreCalculatorBaseTests` | Win/Draw/Loss, totaux simples (4, 6, 3, 0 pts) | 4 |
-| `ScoreCalculatorSeriesBonusTests` | Bonus +5 pour 3 victoires consécutives ; série brisée ; doubles séries (31 pts) | 5 |
-| `ScoreCalculatorDisqualificationTests` | Disqualification → score 0 (avec ou sans combats) | 2 |
-| `ScoreCalculatorPenaltyTests` | Soustraction de pénalités ; plancher à 0 | 3 |
-| `ScoreCalculatorEdgeCaseTests` | Liste vide ; `null` → exception ; pénalité négative ; 100 combats | 4 |
-| `ScoreCalculatorParameterizedTests` | 6 cas `[InlineData]` + 5 cas `[MemberData]` complexes | 11 |
+| Fichier de test                        | Scénarios couverts                                                              | Nb tests |
+| -------------------------------------- | ------------------------------------------------------------------------------- | :------: |
+| `ScoreCalculatorBaseTests`             | Win/Draw/Loss, totaux simples (4, 6, 3, 0 pts)                                  |    4     |
+| `ScoreCalculatorSeriesBonusTests`      | Bonus +5 pour 3 victoires consécutives ; série brisée ; doubles séries (31 pts) |    5     |
+| `ScoreCalculatorDisqualificationTests` | Disqualification → score 0 (avec ou sans combats)                               |    2     |
+| `ScoreCalculatorPenaltyTests`          | Soustraction de pénalités ; plancher à 0                                        |    3     |
+| `ScoreCalculatorEdgeCaseTests`         | Liste vide ; `null` → exception ; pénalité négative ; 100 combats               |    4     |
+| `ScoreCalculatorParameterizedTests`    | 6 cas `[InlineData]` + 5 cas `[MemberData]` complexes                           |    11    |
 
 **Règles métier vérifiées :**
 
-| Règle | Points |
-|-------|--------|
-| Victoire | +3 |
-| Match nul | +1 |
-| Défaite | 0 |
-| Bonus de série (≥ 3 victoires consécutives) | +5 (une fois par série) |
-| Disqualification | score = 0 |
-| Pénalités | `Max(0, score − pénalités)` |
+| Règle                                       | Points                      |
+| ------------------------------------------- | --------------------------- |
+| Victoire                                    | +3                          |
+| Match nul                                   | +1                          |
+| Défaite                                     | 0                           |
+| Bonus de série (≥ 3 victoires consécutives) | +5 (une fois par série)     |
+| Disqualification                            | score = 0                   |
+| Pénalités                                   | `Max(0, score − pénalités)` |
 
 **Exceptions testées :**
 
@@ -115,33 +115,33 @@ Interface : `IScoreCalculator.CalculateScore(matches, isDisqualified, penaltyPoi
 
 Classe testée : `src/.../TP.TournoiEscrimeFantastique/TournamentRanking.cs`
 
-| Fichier de test | Scénarios couverts | Nb tests |
-|-----------------|-------------------|:--------:|
-| `TournamentRankingTests` | Tri décroissant ; ex æquo (ordre d'entrée) ; champion ; liste vide ; tous DQ ; `null` → exception | 8 |
-| `TournamentRankingMoqTests` | Tri avec scores mockés ; appels à `IScoreCalculator` ; transmission DQ/pénalités ; champion score 0 → `null` | 5 |
+| Fichier de test             | Scénarios couverts                                                                                           | Nb tests |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------ | :------: |
+| `TournamentRankingTests`    | Tri décroissant ; ex æquo (ordre d'entrée) ; champion ; liste vide ; tous DQ ; `null` → exception            |    8     |
+| `TournamentRankingMoqTests` | Tri avec scores mockés ; appels à `IScoreCalculator` ; transmission DQ/pénalités ; champion score 0 → `null` |    5     |
 
 **Isolation Moq :** dans `TournamentRankingMoqTests`, `IScoreCalculator` est remplacé par un mock pour tester **uniquement** la logique de classement, sans dépendre des règles de calcul.
 
 ### 4.3 Synthèse des tests
 
-| Indicateur | Valeur |
-|------------|--------|
-| Total de tests exécutés | **42** |
-| Méthodes de test (`[Fact]` / `[Theory]`) | 33 |
-| Couverture `ScoreCalculator` | **100 %** (lignes & branches) |
-| Couverture `TournamentRanking` | **100 %** (lignes & branches) |
-| Seuil CI | ≥ **95 %** sur `ScoreCalculator` |
+| Indicateur                               | Valeur                           |
+| ---------------------------------------- | -------------------------------- |
+| Total de tests exécutés                  | **42**                           |
+| Méthodes de test (`[Fact]` / `[Theory]`) | 33                               |
+| Couverture `ScoreCalculator`             | **100 %** (lignes & branches)    |
+| Couverture `TournamentRanking`           | **100 %** (lignes & branches)    |
+| Seuil CI                                 | ≥ **95 %** sur `ScoreCalculator` |
 
 ---
 
 ## 5. Fonctionnalités non couvertes par les tests automatisés
 
-| Composant | Raison |
-|-----------|--------|
+| Composant                                             | Raison                                                         |
+| ----------------------------------------------------- | -------------------------------------------------------------- |
 | `TP.TournoiEscrimeFantastique.Api` (contrôleurs HTTP) | Pas de projet de tests d'intégration (`WebApplicationFactory`) |
-| `DomainPlayerService`, `OutcomeMapper` | Pas de tests unitaires dédiés |
-| `web/` (Next.js) | Pas de Jest / Playwright configuré |
-| Duels aléatoires, notifications | Logique API non testée automatiquement |
+| `DomainPlayerService`, `OutcomeMapper`                | Pas de tests unitaires dédiés                                  |
+| `web/` (Next.js)                                      | Pas de Jest / Playwright configuré                             |
+| Duels aléatoires, notifications                       | Logique API non testée automatiquement                         |
 
 La couche API **réutilise** le domaine testé ; les règles de score sont donc validées indirectement, mais **pas** le câblage HTTP ↔ base de données ↔ JSON.
 
@@ -189,21 +189,21 @@ Ce service évite de dupliquer la logique métier dans les contrôleurs :
 2. **`IScoreCalculator.CalculateScore()`** calcule le score d'un joueur.
 3. **`TournamentRanking.GetRanking()`** / **`GetChampion()`** établissent le classement.
 
-| Méthode API | Utilisation du domaine |
-|-------------|------------------------|
-| `GetScore(entity)` | `PlayerEntityMapper` → `IScoreCalculator` |
-| `ToDto(entity)` | Score via domaine → `PlayerDto` JSON |
-| `GetRankingDtos(entities)` | `TournamentRanking.GetRanking()` |
-| `GetChampionDto(entities)` | `TournamentRanking.GetChampion()` |
+| Méthode API                | Utilisation du domaine                    |
+| -------------------------- | ----------------------------------------- |
+| `GetScore(entity)`         | `PlayerEntityMapper` → `IScoreCalculator` |
+| `ToDto(entity)`            | Score via domaine → `PlayerDto` JSON      |
+| `GetRankingDtos(entities)` | `TournamentRanking.GetRanking()`          |
+| `GetChampionDto(entities)` | `TournamentRanking.GetChampion()`         |
 
 ### 6.4 Contrôleurs et endpoints
 
-| Contrôleur | Endpoints principaux | Domaine utilisé |
-|------------|---------------------|-----------------|
-| `PlayersController` | CRUD joueurs, ajout/suppression de matchs | `DomainPlayerService.ToDto()` → score calculé |
-| `RankingController` | `GET /api/ranking`, `GET /api/ranking/champion` | `GetRankingDtos()`, `GetChampionDto()` |
-| `DuelsController` | `POST /api/duels` | `GetScore()` après ajout des matchs |
-| `NotificationsController` | `POST /api/notifications/broadcast-ranking` | `GetRankingDtos()` pour les messages |
+| Contrôleur                | Endpoints principaux                            | Domaine utilisé                               |
+| ------------------------- | ----------------------------------------------- | --------------------------------------------- |
+| `PlayersController`       | CRUD joueurs, ajout/suppression de matchs       | `DomainPlayerService.ToDto()` → score calculé |
+| `RankingController`       | `GET /api/ranking`, `GET /api/ranking/champion` | `GetRankingDtos()`, `GetChampionDto()`        |
+| `DuelsController`         | `POST /api/duels`                               | `GetScore()` après ajout des matchs           |
+| `NotificationsController` | `POST /api/notifications/broadcast-ranking`     | `GetRankingDtos()` pour les messages          |
 
 **Exemple de flux** — ajout d'un match :
 
@@ -218,14 +218,14 @@ Client  POST /api/players/1/matches  { "outcome": "Win" }
 
 ### 6.5 Séparation des responsabilités
 
-| Élément | Couche | Testé en CI ? |
-|---------|--------|:-------------:|
-| Règles de calcul (`ScoreCalculator`) | Domaine | ✅ |
-| Classement (`TournamentRanking`) | Domaine | ✅ |
-| Persistance (`PlayerEntity`, EF Core) | API | ❌ |
-| Conversion string → `MatchResult` (`OutcomeMapper`) | API | ❌ |
-| Exposition HTTP (contrôleurs, DTOs) | API | ❌ |
-| Interface utilisateur | Web | ❌ |
+| Élément                                             | Couche  | Testé en CI ? |
+| --------------------------------------------------- | ------- | :-----------: |
+| Règles de calcul (`ScoreCalculator`)                | Domaine |      ✅       |
+| Classement (`TournamentRanking`)                    | Domaine |      ✅       |
+| Persistance (`PlayerEntity`, EF Core)               | API     |      ❌       |
+| Conversion string → `MatchResult` (`OutcomeMapper`) | API     |      ❌       |
+| Exposition HTTP (contrôleurs, DTOs)                 | API     |      ❌       |
+| Interface utilisateur                               | Web     |      ❌       |
 
 ---
 
@@ -233,14 +233,14 @@ Client  POST /api/players/1/matches  { "outcome": "Win" }
 
 Document détaillé : [`BONNES_PRATIQUES.md`](BONNES_PRATIQUES.md)
 
-| Pratique | Application |
-|----------|-------------|
-| Structure **AAA** (Arrange / Act / Assert) | Commentaires dans la majorité des tests |
+| Pratique                                   | Application                                                   |
+| ------------------------------------------ | ------------------------------------------------------------- |
+| Structure **AAA** (Arrange / Act / Assert) | Commentaires dans la majorité des tests                       |
 | Nommage `Méthode_Scénario_RésultatAttendu` | Ex. `CalculateScore_WithThreeConsecutiveWins_Returns14Points` |
-| **FluentAssertions** | `Should().Be()`, `Should().Throw()`, `because:` |
-| **Un concept par test** | Fichiers séparés par catégorie métier |
-| **Tests paramétrés** | `[Theory]` + `[InlineData]` / `[MemberData]` |
-| **Isolation** | Moq sur `IScoreCalculator` pour `TournamentRanking` |
+| **FluentAssertions**                       | `Should().Be()`, `Should().Throw()`, `because:`               |
+| **Un concept par test**                    | Fichiers séparés par catégorie métier                         |
+| **Tests paramétrés**                       | `[Theory]` + `[InlineData]` / `[MemberData]`                  |
+| **Isolation**                              | Moq sur `IScoreCalculator` pour `TournamentRanking`           |
 
 ---
 
@@ -264,11 +264,9 @@ dotnet test TP.TournoiEscrimeFantastique.slnx \
 
 ## 9. Documents complémentaires
 
-| Document | Contenu |
-|----------|---------|
-| [`PLAN_DE_TESTS.md`](PLAN_DE_TESTS.md) | Plan détaillé des scénarios à couvrir |
-| [`RAPPORT_DE_TESTS.md`](RAPPORT_DE_TESTS.md) | Synthèse d'exécution et couverture |
+| Document                                     | Contenu                                    |
+| -------------------------------------------- | ------------------------------------------ |
+| [`PLAN_DE_TESTS.md`](PLAN_DE_TESTS.md)       | Plan détaillé des scénarios à couvrir      |
+| [`RAPPORT_DE_TESTS.md`](RAPPORT_DE_TESTS.md) | Synthèse d'exécution et couverture         |
 | [`BONNES_PRATIQUES.md`](BONNES_PRATIQUES.md) | Conventions xUnit / FluentAssertions / Moq |
-| [`README.md`](../README.md) | Vue d'ensemble du projet et démarrage |
-
----
+| [`README.md`](../README.md)                  | Vue d'ensemble du projet et démarrage      |

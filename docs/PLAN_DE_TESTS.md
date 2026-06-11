@@ -1,4 +1,4 @@
-# Plan de tests — Tournoi d'Escrime Fantastique
+# Plan de tests : Tournoi d'Escrime Fantastique
 
 ## Vue d'ensemble
 
