@@ -55,3 +55,6 @@ Desktop.ini
 
 ## Cursor / local tooling
 .cursor/
+
+web/node_modules/
+web/dist/

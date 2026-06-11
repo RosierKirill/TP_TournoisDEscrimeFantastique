@@ -6,6 +6,20 @@ using IFightScoreCalculator = TP.TournoiEscrimeFantastique.IScoreCalculator;
 
 var builder = WebApplication.CreateBuilder(args);
 
+const string FrontendCorsPolicy = "FrontendCorsPolicy";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(FrontendCorsPolicy, policy =>
+    {
+        var origins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+                      ?? ["http://localhost:3000"];
+        policy.WithOrigins(origins)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
 builder.Services.AddOpenApi(options =>
 {
@@ -29,6 +43,10 @@ builder.Services.AddDbContext<TournamentDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=tournament.db"));
 
 builder.Services.AddScoped<IFightScoreCalculator, DomainScoreCalculator>();
+builder.Services.AddSingleton<TP.TournoiEscrimeFantastique.Api.Notifications.INotificationService,
+                              TP.TournoiEscrimeFantastique.Api.Notifications.InMemoryNotificationService>();
+builder.Services.AddSingleton<TP.TournoiEscrimeFantastique.Api.Duels.IDuelOutcomeGenerator,
+                              TP.TournoiEscrimeFantastique.Api.Duels.RandomDuelOutcomeGenerator>();
 
 var app = builder.Build();
 
@@ -46,6 +64,7 @@ app.MapScalarApiReference(opts =>
     opts.DefaultHttpClient = new(ScalarTarget.CSharp, ScalarClient.HttpClient);
 });
 
+app.UseCors(FrontendCorsPolicy);
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
