@@ -1,0 +1,6 @@
+@TP.TournoiEscrimeFantastique.Api_HostAddress = http://localhost:5211
+
+GET {{TP.TournoiEscrimeFantastique.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
